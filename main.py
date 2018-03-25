@@ -13,9 +13,14 @@ from src.utils import visualization_utils
 video_stream = cv2.VideoCapture(0)
 sys.path.append("..")
 
+prefix = "models/"
+try:
+    os.makedirs(prefix)
+except:
+    pass
+
 model_name = 'ssd_inception_v2_coco_2017_11_17'
-model = model_name + '/frozen_inference_graph.pb'
-PATH_TO_LABELS = os.path.join('src', 'data', 'mscoco_label_map.pbtxt')
+model = prefix + model_name + '/frozen_inference_graph.pb'
 if not os.path.isfile(model):
     site = 'http://download.tensorflow.org/models/object_detection/'
     file_extension = '.tar.gz'
@@ -26,7 +31,7 @@ if not os.path.isfile(model):
     for file in tar.getmembers():
         file_name = os.path.basename(file.name)
         if 'frozen_inference_graph.pb' in file_name:
-            tar.extract(file, os.getcwd())
+            tar.extract(file, os.getcwd() + "/" + prefix)
 
     os.remove(archive_name)
 
@@ -38,6 +43,7 @@ with detection_graph.as_default():
         graph_def.ParseFromString(serialized_graph)
         tensorflow.import_graph_def(graph_def, name='')
 
+PATH_TO_LABELS = os.path.join('src', 'data', 'mscoco_label_map.pbtxt')
 label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
 categories = label_map_util.convert_label_map_to_categories(
     label_map,
@@ -52,6 +58,7 @@ def speak(words):
     tts.save('tmp.mp3')
     os.system("mpg123 -q tmp.mp3")
     os.remove("tmp.mp3")
+
 
 objects = []
 

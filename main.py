@@ -13,7 +13,7 @@ from src.utils import visualization_utils
 video_stream = cv2.VideoCapture(0)
 sys.path.append("..")
 
-model_name = 'ssd_mobilenet_v1_coco_2017_11_17'
+model_name = 'ssd_inception_v2_coco_2017_11_17'
 model = model_name + '/frozen_inference_graph.pb'
 PATH_TO_LABELS = os.path.join('src', 'data', 'mscoco_label_map.pbtxt')
 if not os.path.isfile(model):
